@@ -1,0 +1,40 @@
+# Instantiates a (non-huggingface) scriptable encoder-based LM with BERT as baseline
+# Modernized version of bert-c5
+
+# These are the huggingface bert parameters
+model_type: ScriptableCrammedRNN
+
+# PyTorch LSTM settings:
+input_size: 512
+hidden_size: 512
+num_layers: 2
+bias: True
+seq_first: True
+dropout: 0.1
+bidirectional: False
+proj_size: 0
+
+norm: LayerNorm
+norm_eps: 1e-12
+final_norm: True # Add a final norm layer before the end
+skip_head_transform: True # This is only possible if embedding_dim=hidden_size
+use_bias: False # Whether to learn biases on all dense layers
+
+tie_weights: True # Tie input/output embedding
+decoder_bias: False # Whether to include a bias in the decoding step
+
+loss: cross-entropy
+objective_layout: autoregressive
+
+embedding:
+  vocab_size: # will be populated automatically
+  pos_embedding: scaled-sinusoidal
+  dropout_prob: 0.1 # equal to hidden_dropout_prob in BERT
+  pad_token_id: 0
+  max_seq_length: ${data.seq_length} # max seq length that the positional embedding is instantiated for
+  embedding_dim: ${arch.input_size} # has to be this value for crammedBERT
+  normalization: True
+  stable_low_precision: False
+
+# Set dynamically:
+eos_token_id:

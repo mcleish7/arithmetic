@@ -1,0 +1,11 @@
+# The open webtext replication, as mirrored on HF
+EleutherAI/proof-pile-2:
+  provider: huggingface
+  partition: open-web-math #['default', 'arxiv', 'open-web-math', 'algebraic-stack']
+  split: train
+
+  streaming: False #True
+
+  # source-specific cleaning rules?
+  remove_columns:
+  concatenate_successive_entries: 0

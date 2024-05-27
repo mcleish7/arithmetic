@@ -1,0 +1,34 @@
+# Just a tiny test dataset ...
+name: sanity-check-2
+# https://hydra.cc/docs/patterns/select_multiple_configs_from_config_group/
+defaults:
+  - sources:
+      - ag_news
+
+# Preprocessing
+normalizer:
+  force_lowercase: False
+  strip_accents: False
+  force_english_keyboard: False
+tokenizer: BPE # faster for sanity checks
+vocab_size: 32768 # to make sure there are not memory surprises compared to the actual data
+
+# Dataset Formation
+seq_length: 128
+include_eot_token_in_corpus: True
+
+max_entries_in_raw_dataset: 1e10 # Select only this many examples from the dataset
+max_seq_in_tokenized_dataset: 1e10 # Select only this many tokenized sequences.
+# max_seq_in_tokenized_dataset should be just slightly more than budget * 60 * 60 * expected tokens/sec for the single epoch of training
+
+# Data Cleaning:
+remove_trash: False
+trash_cutoff: 0.3
+deduplicate_entries: False
+deduplication_threshold: 100
+
+# Data Order:
+ordering: randomized # could be a curriculum
+
+# Validation Split
+validation_seqs: 128 # how many sequences to reserve for validation

@@ -1,0 +1,109 @@
+# Settings for implementation details
+# These settings "should" not influence the outcome of the computation in major ways, only its speed.
+# These settings are generic implementation details
+# -----------------------------------------------------------------------------------------------------
+
+# This is the main folder where data will be stored (such as caches of datasets and tokenizers):
+# This can be an absolute path (which will be honored) or a relative path
+# The relative path will be executed relative to the cfg.base_dir
+# This behavior is controlled in the main_launcher
+path: data
+
+# data implementation:
+local_staging_dir: # Optionally copy a preprocessed dataset into this folder before loading it for training
+forbid_dataset_preprocessing: True
+temporary_corpus: False # Save data directly into local staging dir, forget after use
+max_raw_chunk_size: 1e14
+
+# checkpointing and logging:
+print_loss_every_nth_step: 1000
+save_intermediate_checkpoints: False
+save_every_nth_step: -1
+save_every_n_minutes: -1
+save_intermediate_model_name:
+
+# early termination, cancel runs that do not meet this loss threshold early.
+early_termination:
+  enabled: False
+  budget: 3 # budget in hours
+  loss_threshold: 6.0 # modify this for non-xent losses
+  overall_budget: -1
+
+# Batch size settings:
+# batch_size: This is handled in train after commit 982a4d33cd7f79a48b691114ae78f6ad1cdbee69
+microbatch_size: 128 # dont make it larger than batch_size...
+
+# Basic compute settings
+threads: 32 # maximal number of cpu dataloader workers used per GPU, this value will never exceed num_gpus * num_physical threads
+# Dataloader multiprocessing
+pad_to_multiple_of: 8 # padding in dataloader during downstream
+shuffle_in_dataloader: False # There is still shuffling in the preprocessing pipeline.
+pin_memory: True
+prefetch_factor: 2
+persistent_workers: True # this clashes with pin_memory in pytorch<1.7.1
+
+# Default floating point precision:
+default_precision: float # needs to be a pytorch datatype
+
+# Distributed training
+dist_backend: nccl
+sharing_strategy: # file_descriptor # if no argument is given, then the OS default is picked by pytorch
+
+# Misc:
+enable_huggingface_offline_mode: False
+local_rank: # This is set automatically by the system_startup
+
+save_final_model: False
+push_to_huggingface_hub: False
+hf_directoy_name: "test-crammedBERT-c5" # set a clever name here!
+
+add_env_variables:
+# should be NAME: stringval
+
+# TORCHINDUCTOR_MAX_AUTOTUNE_POINTWISE
+# TORCHINDUCTOR_MAX_AUTOTUNE_GEMM
+
+# Other constants:
+# OMP_NUM_THREADS:[number_of_physical_cores]
+# OMP_SCHEDULE:  # STATIC
+# OMP_PROC_BIND: # CLOSE
+# GOMP_CPU_AFFINITY:  # "N-M"
+# KMP_AFFINITY: # "granularity=fine,compact,1,0"
+# KMP_BLOCKTIME: # 1
+# optional_ld_preloads:
+#  - libiomp5.so
+# - jemalloc.so
+
+#
+# ### jemalloc
+# export MALLOC_CONF="oversize_threshold:1,background_thread:true,metadata_thp:auto,dirty_decay_ms:-1,muzzy_decay_ms:-1"
+# export LD_PRELOAD=/home/mingfeim/packages/jemalloc-5.2.1/lib/libjemalloc.so
+#
+# ### tcmalloc
+# export LD_PRELOAD=/home/mingfeim/packages/gperftools-2.8/install/lib/libtcmalloc.so
+
+example_token_limit: 30 # never generate more example tokens than this
+# example_prompts:
+#   - "Oh, distinctly I remember, it was in the bleak"
+#   - "The capital of Germany is"
+#   - "The Westphalian peace ended the"
+#   - "Hi! My name is"
+#   - "In the place where we were born,"
+#   - "Time is a"
+
+# example_prompts:
+#   - "System.out.println("
+#   - "public class "
+#   - "public static void main"
+#   - "/* print hello world */"
+#   - "System.out.println(2);"
+#   - "for (let i = 0; i < myarray.length; i++) {"
+example_prompts:
+    - "3 + 3 = "
+    - "44 + 56 = "
+    - "003 + 003 = "
+    - "070 + 094 = "
+    - "345 + 324 = "
+    - "598 + 527 = "
+    - "1234 + 4321 = "
+    - "94633 + 91826 = "

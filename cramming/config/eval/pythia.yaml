@@ -1,0 +1,18 @@
+# defaults:
+#   - optim: adam
+#   - tasks:
+      # - winogrande
+      # - lambada_openai
+      # - piqa
+      # - winograd_wsc
+      # - arc
+      # - sciq
+      # - logiqa
+
+name: pythia-tests
+
+arch_modifications: null
+# checkpoint name:
+# This can be either "latest", or a reference to a specific checkpoint in a subfolder
+checkpoint: latest
+path: ${impl.path} # Path for caches of datasets and tokenizers

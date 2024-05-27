@@ -1,0 +1,44 @@
+# Instantiates a (non-huggingface) scriptable decoder-based LM
+# This matches the gpt2 settings in the custom implementation
+# (minus dropout which I did not even implement)
+
+model_type: ScriptableCrammedTransformer
+
+num_transformer_layers: 12
+hidden_size: 768
+intermed_size: 3072
+
+norm: LayerNorm
+norm_eps: 1e-05
+norm_scheme: post # can be "pre", "post"
+nonlin: GELU
+
+tie_weights: True # Tie input/output embedding
+decoder_bias: False # Whether to include a bias in the decoding step
+use_bias: True # Whether to learn biases on all dense layers
+final_norm: True # Add a final norm layer before the end
+sub_normalization: False
+
+embedding:
+  vocab_size: # will be populated automatically
+  pos_embedding: learned
+  max_seq_length: ${data.seq_length} # max seq length that the positional embedding is instantiated for
+  embedding_dim: ${arch.hidden_size} # has to be this value for crammedBERT
+  normalization: True
+  stable_low_precision: False
+
+attention:
+  type: pytorch # also works with "pytorch"
+  num_attention_heads: 12
+  skip_output_projection: False
+  qkv_bias: True
+  bias_in_proj: True
+
+  rotary_embedding: False
+  seq_op_in_fp32: True # whether to always cast the operation over the sequence into fp32 (e.g.. the softmax in normal attn)
+  sequence_op: torch-softmax # Can be normalization
+  sub_normalization: False
+
+init:
+  type: normal
+  std: 0.02

@@ -1,0 +1,56 @@
+# Instantiates a (non-huggingface) scriptable decoder-based LM
+# This is set up to be as close to ALBERT-large (Lan et al.) as reasonable for a decoder-based model
+
+model_type: ScriptableCrammedDepthRecurrent
+
+layers_in_recurrent_block: 1
+maximal_recurrence: 24
+max_backprop: # use half of maximal_recurrence if not given, minimal is 1 # only valid for TBTT
+maximal_recurrence_in_eval: 24
+
+hidden_size: 1024
+intermed_size: 4096
+input_injection_type: none
+initial_hidden_randomized: False
+state_init:
+
+norm: LayerNorm
+norm_eps: 1e-12
+norm_scheme: post # can be "pre", "post"
+nonlin: GELU
+sub_normalization: False
+
+tie_weights: True # Tie input/output embedding
+decoder_bias: True # Whether to include a bias in the decoding step
+use_bias: True # Whether to learn biases on all dense layers
+final_norm: False # Add a final norm layer before the end
+head: identity
+
+objective_layout: fixed
+
+embedding:
+  vocab_size: # will be populated automatically
+  pos_embedding: learned
+  max_seq_length: ${data.seq_length} # max seq length that the positional embedding is instantiated for
+  embedding_dim: 128
+  normalization: True
+  stable_low_precision: False
+
+attention:
+  type: pytorch # also works with "pytorch"
+  num_attention_heads: 16 # for flash
+  skip_output_projection: False
+  qkv_bias: True
+  bias_in_proj: True
+
+  rotary_embedding: False
+  seq_op_in_fp32: False # whether to always cast the operation over the sequence into fp32 (e.g.. the softmax in normal attn)
+  sequence_op: torch-softmax # Can be normalization
+  sub_normalization: False # could be turned off separately # Is only used if type=self-attention (i.e the hand-made version)
+
+init:
+  type: normal
+  std: 0.02
+
+throttle: False # only active during TBPTT
+local_compilation: True # Try to compile the static block, no matter what the global compile setting is set to

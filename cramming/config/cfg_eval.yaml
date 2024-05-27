@@ -1,0 +1,76 @@
+# Configuration defaults
+# Settings are separated into hyperparameters for architecture, data, implementation and train/eval hyperparams
+defaults:
+  - impl: torch-default
+  - train: common
+  - wandb: default
+  - eval: pythia
+  - data: arithemtic
+  - _self_
+  - override hydra/job_logging: custom
+
+reverse_inputs: True
+pad_zeros: 0
+extended_eval: False
+greedy: True
+temp: 1.0
+token_limit: 30 # number of tokens in 'thinking plot'
+max_rec: null # to give more or less recurrence at evaluation that during training
+
+## Addition
+remove_padding: True # used as our eval data has some padding in it that needs to be removed on the fly
+large: True
+ood_only: False
+up_to_40: False
+up_to_50: False
+
+checkerboard: null
+big_eval_step_1: False
+big_eval_step_2: False
+big_eval_step_3: False
+big_eval_step_4: False
+big_eval_step_5: False
+big_eval_step_6: False
+big_eval_step_7: False
+big_eval_step_8: False
+big_eval_step_9: False
+big_eval_step_10: False
+
+# for doing custom splits
+max_size_given: null
+start_ind_1_given: null
+start_ind_2_given: null
+
+## Multiplication
+mul: False
+
+## Pos arithmetic
+pos_arth: False
+pos_arth_ood: False
+
+wandb:
+  project: generative-eval
+
+# Total and central computation budget in hours:
+budget: 24
+overall_budget: ${budget}
+
+base_dir: outputs
+model_dir:
+
+hydra:
+  sweep:
+    dir: ${base_dir}/${name}/downstream/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  run:
+    dir: ${base_dir}/${name}/downstream/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: True
+
+seed: # Optional: Set initial seed
+
+# A name for this run [will draw the checkpoint from runs with this name
+# and use this name for the summary table and outputs folder]
+name: default
+
+# debug implementation by running every loop just once:
+dryrun: False

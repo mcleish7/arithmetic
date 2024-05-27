@@ -1,0 +1,10 @@
+# Just a bunch of fake data ...
+arithmetic:
+  provider: arithmetic
+  split:
+
+  randgen_seed: 0
+  size: 2048
+
+  tokenized_dataset_path: "arithmetic_data/+_n_3_m_3_examples_100_seed_42/hf_tokenized_dataset"
+  tokenizer_type: # for specifiying which arthmetic tokenizer we want to use

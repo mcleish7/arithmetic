@@ -1,0 +1,34 @@
+# Instantiates a (non-huggingface) scriptable encoder-based LM with BERT as baseline
+# Modernized version of bert-c5
+
+# These are the huggingface bert parameters
+model_type: ScriptableFakeRNN
+
+n_blocks: 5
+state_size: 512
+hidden_size: 512
+bottle_size: 256
+block_type: resnet
+
+tie_weights: True # Tie input/output embedding
+decoder_bias: False # Whether to include a bias in the decoding step
+
+loss: cross-entropy
+objective_layout: autoregressive
+
+embedding:
+  vocab_size: # will be populated automatically
+  pos_embedding: None
+  dropout_prob: 0.1 # equal to hidden_dropout_prob in BERT
+  pad_token_id: 0
+  max_seq_length: ${data.seq_length} # max seq length that the positional embedding is instantiated for
+  embedding_dim: ${arch.hidden_size} # has to be this value for crammedBERT
+  normalization: False
+  stable_low_precision: False
+
+init:
+  type: normal
+  std: 0.02
+
+# Set dynamically:
+eos_token_id:

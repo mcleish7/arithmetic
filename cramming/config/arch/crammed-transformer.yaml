@@ -1,0 +1,44 @@
+# Instantiates a (non-huggingface) scriptable decoder-based LM
+# This inherits architecture changes from the crammed-bert project
+# How performant is this?
+
+model_type: ScriptableCrammedTransformer
+
+num_transformer_layers: 16
+hidden_size: 768
+intermed_size: 3072
+
+norm: LayerNorm
+norm_eps: 1e-12
+norm_scheme: pre # can be "pre", "post"
+nonlin: GELUglu
+
+tie_weights: True # Tie input/output embedding
+decoder_bias: False # Whether to include a bias in the decoding step
+use_bias: False # Whether to learn biases on all dense layers
+final_norm: True # Add a final norm layer before the end
+sub_normalization: False # Sub-normalization in attn and ffn blocks
+
+embedding:
+  vocab_size: # will be populated automatically
+  pos_embedding: scaled-sinusoidal
+  max_seq_length: ${data.seq_length} # max seq length that the positional embedding is instantiated for
+  embedding_dim: ${arch.hidden_size} # has to be this value for crammedBERT
+  normalization: True
+  stable_low_precision: False
+
+attention:
+  type: pytorch # also works with "pytorch"
+  num_attention_heads: 16 # for flash
+  skip_output_projection: False
+  qkv_bias: False
+  bias_in_proj: False
+
+  rotary_embedding: False
+  seq_op_in_fp32: False # whether to always cast the operation over the sequence into fp32 (e.g.. the softmax in normal attn)
+  sequence_op: torch-softmax # Can be normalization
+  sub_normalization: ${arch.sub_normalization} # could be turned off separately # Is only used if type=self-attention (i.e the hand-made version)
+
+init:
+  type: normal
+  std: 0.02
