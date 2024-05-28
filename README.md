@@ -1,10 +1,23 @@
-# Transformers Can Do Arithmetic with the Right Embeddings!
+# Transformers Can Do Arithmetic with the Right Embeddings! [Link to arXiv paper](https://arxiv.org/abs/2405.17399)
 
 A joint project by: Sean McLeish, Arpit Bansal, Alex Stein,  Neel Jain, John Kirchenbauer, Brian R. Bartoldson, Bhavya Kailkhura, Abhinav Bhatele, Jonas Geiping, Avi Schwarzschild and Tom Goldstein
+
+
 
 This repository contains code to replicate our research. It is a fork of the language model training framework [cramming](https://github.com/JonasGeiping/cramming) edited to for a next token prediction objective.
 
 We provide a standalone implementation of Abacus Embeddings in [abacus.py](abacus.py).
+
+## Citing Our Work
+To cite our work, please use this bibtex.
+```
+@article{mcleish2024transformers,
+    title={Transformers Can Do Arithmetic with the Right Embeddings}, 
+    author={Sean McLeish and Arpit Bansal and Alex Stein and Neel Jain and John Kirchenbauer and Brian R. Bartoldson and Bhavya Kailkhura and Abhinav Bhatele and Jonas Geiping and Avi Schwarzschild and Tom Goldstein},
+    journal={arXiv preprint arXiv:2405.17399},
+    year={2024}
+}
+```
 
 # Getting Started
 We developed in Python 3.10.4, to install run:
